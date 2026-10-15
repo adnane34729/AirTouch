@@ -1,0 +1,39 @@
+# gesture-control dependencies
+#
+# Python 3.9 - 3.12. MediaPipe publishes no wheels outside that range, so on a
+# machine with several Pythons it matters which one you install into:
+#
+#     py -3.12 -m pip install -r requirements.txt
+#
+# run.py checks the running interpreter and re-launches under a suitable one
+# automatically, and --doctor reports what is installed where.
+
+# --- required -------------------------------------------------------------
+numpy>=1.24
+opencv-python>=4.8
+mediapipe>=0.10.8,<0.11
+
+# --- recommended ----------------------------------------------------------
+# Keyboard and media-key gestures. Everything else works without it; those
+# gestures report "pynput is not available" instead of failing silently.
+pynput>=1.7
+
+# --- Windows: system volume and screen brightness -------------------------
+# comtypes + pycaw give volume control (verified working with pycaw 20181226,
+# the older API shape, and with the newer AudioDevice.EndpointVolume shape).
+comtypes>=1.2.0; sys_platform == "win32"
+pycaw>=20181226; sys_platform == "win32"
+
+# Screen brightness. Note: on Windows, screen-brightness-control needs the
+# `wmi` package *and* a WmiMonitorBrightness WMI class. Without `wmi` it fails
+# with "RuntimeError: generator didn't stop after throw()", which hides the real
+# cause -- so `wmi` is listed here rather than left to chance.
+screen-brightness-control>=0.21; sys_platform == "win32"
+wmi>=1.5.1; sys_platform == "win32"
+pywin32>=305; sys_platform == "win32"
+
+# --- development (optional) ----------------------------------------------
+# The test suite uses only the standard library's unittest, so it runs without
+# any of these. They are conveniences, not requirements.
+# pytest>=7.4
+# ruff>=0.4

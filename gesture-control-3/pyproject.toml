@@ -1,0 +1,86 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gesture-control"
+version = "2.0.0"
+description = "Real-time hand-gesture control for volume, brightness, and media keys"
+readme = "README.md"
+requires-python = ">=3.9,<3.13"
+license = { text = "MIT" }
+keywords = ["mediapipe", "opencv", "gesture", "hand-tracking", "accessibility"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Win32 (MS Windows)",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Sound/Audio :: Mixers",
+    "Topic :: Multimedia :: Video :: Capture",
+]
+dependencies = [
+    "numpy>=1.24",
+    "opencv-python>=4.8",
+    "mediapipe>=0.10.8,<0.11",
+]
+
+[project.optional-dependencies]
+# Keyboard and media-key gestures.
+keys = ["pynput>=1.7"]
+# Windows volume and brightness.
+windows = [
+    "comtypes>=1.2.0",
+    "pycaw>=20181226",
+    "screen-brightness-control>=0.21",
+    "wmi>=1.5.1",
+    "pywin32>=305",
+]
+dev = ["pytest>=7.4", "ruff>=0.4"]
+
+[project.scripts]
+gesture-control = "gesture_control.cli:main"
+
+[project.urls]
+Documentation = "https://github.com/example/gesture-control#readme"
+
+[tool.setuptools]
+packages = ["gesture_control", "gesture_control.actions"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+src = ["gesture_control", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM", "RET", "ARG", "PTH", "PL"]
+ignore = [
+    "PLR0911", # many returns: explicit early exits read better here
+    "PLR0912", # many branches: the overlay layout is inherently branchy
+    "PLR0913", # many arguments: configuration objects need them
+    "PLR0915", # many statements: the HUD panel builders are long but linear
+    "PLR2004", # magic values: gesture thresholds are documented constants
+    "E501",    # line length is handled by the formatter
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["PLR2004", "ARG002", "SLF001"]
+"gesture_control/overlay.py" = ["N806"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["gesture_control"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# The tests are stdlib unittest classes, which pytest collects natively.
+addopts = "-q"
+
+[tool.mypy]
+python_version = "3.11"
+warn_unused_ignores = true
+warn_redundant_casts = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
